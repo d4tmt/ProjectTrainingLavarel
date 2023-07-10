@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\user\CreateUserRequest;
 use App\Http\Requests\user\UpdateUserRequest;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
@@ -14,7 +15,7 @@ class UserController extends Controller
         $user = DB::table('users')
             ->where('state','=',1)
             ->get();
-        dd($user);
+        return UserResource::collection($user);
     }
 
     public function create(CreateUserRequest $request){
@@ -44,23 +45,27 @@ class UserController extends Controller
             $user->save();
             dd('updateUserSuccess');
         }
-//        User::where('id', $request->id)
-//            ->update(['userName'=>$request->username,
-//                    'firstName'=>$request->firstname,
-//                    'lastName'=>$request->lastname,
-//                    'dateOfBirth'=>$request->dateofbirth,
-//                    'address'=>$request->address,
-//                    'email'=>$request->email
-//                ]);
     }
 
     public function show(int $id){
-//        $user = User::find($id);
         $user = DB::table('users')
             ->where('id','=',$id)
             ->where('state','=',1)->first();
         if($user != null){
-            dd($user);
+//            dd($user);
+//            return response()->json([
+//                'id' => $user->id,
+//                'username'=>$user->username,
+//                'firstname'=>$user->firstname,
+//                'lastname'=>$user->lastname,
+//                'date_of_birth'=>$user->date_of_birth,
+//                'address'=>$user->address,
+//                'email'=>$user->email,
+//                'password'=>$user->password,
+//                'created_at' =>$user->created_at,
+//                'updated_at'=>$user->updated_at,
+//            ]);
+            return new UserResource($user);
         }else{
             dd('Id does not Exist');
         }
